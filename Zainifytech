@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ZainifyQuizApp());
+}
+
+class ZainifyQuizApp extends StatelessWidget {
+  const ZainifyQuizApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Zainify Quiz',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const QuizPage(),
+    );
+  }
+}
+
+class QuizPage extends StatefulWidget {
+  const QuizPage({super.key});
+
+  @override
+  State<QuizPage> createState() => _QuizPageState();
+}
+
+class _QuizPageState extends State<QuizPage> {
+  final List<Map<String, Object>> _questions = [
+    {
+      'questionText': 'Flutter is developed by?',
+      'answers': [
+        {'text': 'Google', 'score': 1},
+        {'text': 'Facebook', 'score': 0},
+        {'text': 'Microsoft', 'score': 0},
+      ],
+    },
+    {
+      'questionText': 'Which language is used by Flutter?',
+      'answers': [
+        {'text': 'Dart', 'score': 1},
+        {'text': 'Java', 'score': 0},
+        {'text': 'Kotlin', 'score': 0},
+      ],
+    },
+    {
+      'questionText': 'Flutter is used for?',
+      'answers': [
+        {'text': 'App Development', 'score': 1},
+        {'text': 'Game Development', 'score': 0},
+        {'text': 'Web Browsing', 'score': 0},
+      ],
+    },
+  ];
+
+  int _questionIndex = 0;
+  int _totalScore = 0;
+
+  void _answerQuestion(int score) {
+    _totalScore += score;
+    setState(() {
+      _questionIndex++;
+    });
+  }
+
+  void _restartQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Zainify Quiz Game'),
+      ),
+      body: _questionIndex < _questions.length
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _questions[_questionIndex]['questionText'] as String,
+                  style: const TextStyle(fontSize: 24),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                ...(_questions[_questionIndex]['answers']
+                        as List<Map<String, Object>>)
+                    .map((answer) {
+                  return ElevatedButton(
+                    onPressed: () =>
+                        _answerQuestion(answer['score'] as int),
+                    child: Text(answer['text'] as String),
+                  );
+                }).toList(),
+              ],
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Quiz Completed!\nYour Score: $_totalScore',
+                    style: const TextStyle(fontSize: 22),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _restartQuiz,
+                    child: const Text('Restart Quiz'),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
